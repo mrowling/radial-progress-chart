@@ -17,7 +17,7 @@ function RadialProgressChart(query, options) {
     , width = 15 + ((self.options.diameter / 2) + (self.options.stroke.width * self.options.series.length) + (self.options.stroke.gap * self.options.series.length - 1)) * 2
     , height = width
     , dim = "0 0 " + height + " " + width
-    , τ = 2 * Math.PI
+    , τ = 2 * Math.PI * self.options.scale
     , inner = []
     , outer = [];
 
@@ -42,9 +42,9 @@ function RadialProgressChart(query, options) {
   }
 
   self.progress = d3.svg.arc()
-    .startAngle(0)
+    .startAngle(self.options.startPoint)
     .endAngle(function (item) {
-      return item.percentage / 100 * τ;
+      return item.percentage / 100 * τ + self.options.startPoint;
     })
     .innerRadius(innerRadius)
     .outerRadius(outerRadius)
@@ -55,11 +55,17 @@ function RadialProgressChart(query, options) {
       return (self.options.stroke.width / 2) * m;
     });
 
-  var background = d3.svg.arc()
-    .startAngle(0)
-    .endAngle(τ)
-    .innerRadius(innerRadius)
-    .outerRadius(outerRadius);
+  if (self.options.background) {
+    var background = d3.svg.arc()
+      .startAngle(self.options.startPoint)
+      .endAngle(τ + self.options.startPoint)
+      .innerRadius(innerRadius)
+      .outerRadius(outerRadius);
+  } else {
+    var background = d3.svg.arc();
+  }
+
+
 
   // create svg
   self.svg = d3.select(query).append("svg")
@@ -82,7 +88,7 @@ function RadialProgressChart(query, options) {
   var dropshadowId = "dropshadow-" + Math.random();
   var filter = defs.append("filter").attr("id", dropshadowId);
   if(self.options.shadow.width > 0) {
-    
+
     filter.append("feGaussianBlur")
       .attr("in", "SourceAlpha")
       .attr("stdDeviation", self.options.shadow.width)
@@ -304,7 +310,11 @@ RadialProgressChart.normalizeOptions = function (options) {
     max: options.max || 100,
     round: options.round !== undefined ? !!options.round : true,
     series: options.series || [],
-    center: RadialProgressChart.normalizeCenter(options.center)
+    center: RadialProgressChart.normalizeCenter(options.center),
+    border: options.scale || true,
+    scale: options.scale || 1,
+    // Optionally can be set via offset
+    startPoint: options.startPoint || options.offset || 0,
   };
 
   var defaultColorsIterator = new RadialProgressChart.ColorsIterator();
