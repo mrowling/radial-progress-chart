@@ -11,6 +11,7 @@ function RadialProgressChart(query, options) {
 
   var self = this;
   self.options = RadialProgressChart.normalizeOptions(options);
+  console.log(self.options);
 
   // internal  variables
   var series = self.options.series
@@ -51,7 +52,12 @@ function RadialProgressChart(query, options) {
     .cornerRadius(function (d) {
       // Workaround for d3 bug https://github.com/mbostock/d3/issues/2249
       // Reduce corner radius when corners are close each other
-      var m = d.percentage >= 90 ? (100 - d.percentage) * 0.1 : 1;
+      var m;
+      if (self.options.scale > 1) {
+        m = 1;
+      } else {
+        m = d.percentage >= 90 ? (100 - d.percentage) * 0.1 : 1;
+      }
       return (self.options.stroke.width / 2) * m;
     });
 
