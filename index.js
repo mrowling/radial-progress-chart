@@ -79,7 +79,8 @@ function RadialProgressChart(query, options) {
     .attr("viewBox", dim)
     .append("g")
     .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
-
+/*
+  // Remove gradients for Safari/iOS support
   // add gradients defs
   var defs = self.svg.append("svg:defs");
   series.forEach(function (item) {
@@ -109,7 +110,7 @@ function RadialProgressChart(query, options) {
 
   var feMerge = filter.append("feMerge");
   feMerge.append("feMergeNode").attr("in", "offsetBlur");
-  feMerge.append("feMergeNode").attr("in", "SourceGraphic");
+  feMerge.append("feMergeNode").attr("in", "SourceGraphic");*/
 
   // add inner text
   if (self.options.center) {
@@ -156,7 +157,7 @@ function RadialProgressChart(query, options) {
     .data(series)
     .enter().append("g");
 
-  self.field.append("path").attr("class", "progress").attr("filter", "url(#" + dropshadowId +")");
+  self.field.append("path").attr("class", "progress")/*.attr("filter", "url(#" + dropshadowId +")")*/;
 
   self.field.append("path").attr("class", "bg")
     .style("fill", function (item) {
