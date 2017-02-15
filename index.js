@@ -53,10 +53,10 @@ function RadialProgressChart(query, options) {
       // Workaround for d3 bug https://github.com/mbostock/d3/issues/2249
       // Reduce corner radius when corners are close each other
       var m;
-      if (self.options.scale > 1) {
+      if (self.options.scale < 1) {
         m = 1;
       } else {
-        m = d.percentage >= 90 ? (100 - d.percentage) * 0.1 : 1;
+        m = d.percentage >= 99 ? (100 - d.percentage) * 0.1 : 1;
       }
       return (self.options.stroke.width / 2) * m;
     });
