@@ -116,7 +116,7 @@ function RadialProgressChart(query, options) {
   if (self.options.center) {
     self.svg.append("text")
       .attr('class', 'rbc-center-text')
-      .attr("text-anchor", "middle")
+      .attr("text-anchor", self.options.center.textAnchor)
       .attr('x', self.options.center.x + 'px')
       .attr('y', self.options.center.y + 'px')
       .selectAll('tspan')
@@ -177,6 +177,7 @@ function RadialProgressChart(query, options) {
         self.options.stroke.width / 2
         );
     })
+    .attr('font-size', '10px')
     .text(function (item) {
       return item.labelStart;
     });
@@ -256,7 +257,7 @@ RadialProgressChart.prototype.update = function (data) {
             .selectAll('tspan')
             .each(function () {
               if (this.callback) {
-                d3.select(this).text(this.callback(interpolator(t), item.index, item));
+                d3.select(this).text(this.callback(interpolator(t), item.index, item, self.options.series));
               }
             });
         };
@@ -337,6 +338,7 @@ RadialProgressChart.normalizeOptions = function (options) {
       index: i,
       value: item.value,
       labelStart: item.labelStart,
+      label: item.label,
       color: RadialProgressChart.normalizeColor(item.color, defaultColorsIterator)
     };
   }
@@ -432,6 +434,7 @@ RadialProgressChart.normalizeCenter = function (center) {
   center.content = center.content || [];
   center.x = center.x || 0;
   center.y = center.y || 0;
+  center.textAnchor = center.textAnchor || 'middle';
 
   // Convert content to array notation
   if (!Array.isArray(center.content)) {
